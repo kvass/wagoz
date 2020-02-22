@@ -1,0 +1,252 @@
+<template>
+<div>
+  <button @click="startCard" v-if="option.A">开始</button>
+  <ul class="oringeCard">
+    <li v-for="(card, index) in cards" @click="deskCard(card.num,index)" v-bind:class="[card.des, {open: card.open}]" :key='index' v-bind:title='card.title'>{{card.name}}</li>
+  </ul>
+  <section class="you">
+    <ul>
+      <li v-for="(card, index) in MMcards" @click="DIAOchu(card.num,index)" v-bind:class="[card.des, {open: card.open}]" :key='index' v-bind:title='card.title'>{{card.name}}</li>
+    </ul>
+    <!-- <ul>
+      <li v-for="(card, index) in BBcards" v-bind:class="[card.des, {open: card.open}]" :key='index' v-bind:title='card.title'>{{card.name}}</li>
+    </ul>
+    <ul>
+      <li v-for="(card, index) in UScards" v-bind:class="[card.des, {open: card.open}]" :key='index' v-bind:title='card.title'>{{card.name}}</li>
+    </ul>
+    <ul>
+      <li v-for="(card, index) in DDcards" v-bind:class="[card.des, {open: card.open}]" :key='index' v-bind:title='card.title'>{{card.name}}</li>
+    </ul> -->
+    <ul class="openCard">
+      <li v-for="(card, index) in OPENcards" @click="DIAOdiao(card.des)" v-bind:class="[card.des, {open: card.open}]" :key='index' v-bind:title='card.title'>{{card.name}}</li>
+    </ul>
+    <ul>
+      <li v-for="(card, index) in MMQcards" v-bind:class="[card.des, {open: card.open}]" :key='index' v-bind:title='card.title'>{{card.name}}</li>
+    </ul>
+  </section>
+ </div>
+</template>
+
+<script>
+
+export default {
+  data() {
+    return {
+      cards: [
+        {des: "A", title: "红桃尖", num: '1', open: false, name: 'A'},
+        {des: "A", title: "红桃二", num: '2', open: false, name: '2'},
+        {des: "A", title: "红桃三", num: '3', open: false, name: '3'},
+        {des: "A", title: "红桃四", num: '4', open: false, name: '4'},
+        {des: "A", title: "红桃五", num: '5', open: false, name: '5'},
+        {des: "A", title: "红桃六", num: '6', open: false, name: '6'},
+        {des: "A", title: "红桃七", num: '7', open: false, name: '7'},
+        {des: "A", title: "红桃八", num: '8', open: false, name: '8'},
+        {des: "A", title: "红桃九", num: '9', open: false, name: '9'},
+        {des: "A", title: "红桃十", num: '10', open: false, name: '10'},
+        {des: "A", title: "红桃勾", num: '11', open: false, name: 'J'},
+        {des: "A", title: "红桃皮蛋", num: '12', open: false, name: 'Q'},
+        {des: "A", title: "红桃老K", num: '13', open: false, name: 'K'},
+        {des: "B", title: "黑桃尖", num: '1', open: false, name: 'A'},
+        {des: "B", title: "黑桃二", num: '2', open: false, name: '2'},
+        {des: "B", title: "黑桃三", num: '3', open: false, name: '3'},
+        {des: "B", title: "黑桃四", num: '4', open: false, name: '4'},
+        {des: "B", title: "黑桃五", num: '5', open: false, name: '5'},
+        {des: "B", title: "黑桃六", num: '6', open: false, name: '6'},
+        {des: "B", title: "黑桃七", num: '7', open: false, name: '7'},
+        {des: "B", title: "黑桃八", num: '8', open: false, name: '8'},
+        {des: "B", title: "黑桃九", num: '9', open: false, name: '9'},
+        {des: "B", title: "黑桃十", num: '10', open: false, name: '10'},
+        {des: "B", title: "黑桃勾", num: '11', open: false, name: 'J'},
+        {des: "B", title: "黑桃皮蛋", num: '12', open: false, name: 'Q'},
+        {des: "B", title: "黑桃老K", num: '13', open: false, name: 'K'},
+        {des: "C", title: "方块尖", num: '1', open: false, name: 'A'},
+        {des: "C", title: "方块二", num: '2', open: false, name: '2'},
+        {des: "C", title: "方块三", num: '3', open: false, name: '3'},
+        {des: "C", title: "方块四", num: '4', open: false, name: '4'},
+        {des: "C", title: "方块五", num: '5', open: false, name: '5'},
+        {des: "C", title: "方块六", num: '6', open: false, name: '6'},
+        {des: "C", title: "方块七", num: '7', open: false, name: '7'},
+        {des: "C", title: "方块八", num: '8', open: false, name: '8'},
+        {des: "C", title: "方块九", num: '9', open: false, name: '9'},
+        {des: "C", title: "方块十", num: '10', open: false, name: '10'},
+        {des: "C", title: "方块勾", num: '11', open: false, name: 'J'},
+        {des: "C", title: "方块皮蛋", num: '12', open: false, name: 'Q'},
+        {des: "C", title: "方块老K", num: '13', open: false, name: 'K'},
+        {des: "D", title: "梅花尖", num: '1', open: false, name: 'A'},
+        {des: "D", title: "梅花二", num: '2', open: false, name: '2'},
+        {des: "D", title: "梅花三", num: '3', open: false, name: '3'},
+        {des: "D", title: "梅花四", num: '4', open: false, name: '4'},
+        {des: "D", title: "梅花五", num: '5', open: false, name: '5'},
+        {des: "D", title: "梅花六", num: '6', open: false, name: '6'},
+        {des: "D", title: "梅花七", num: '7', open: false, name: '7'},
+        {des: "D", title: "梅花八", num: '8', open: false, name: '8'},
+        {des: "D", title: "梅花九", num: '9', open: false, name: '9'},
+        {des: "D", title: "梅花十", num: '10', open: false, name: '10'},
+        {des: "D", title: "梅花勾", num: '11', open: false, name: 'J'},
+        {des: "D", title: "梅花皮蛋", num: '12', open: false, name: 'Q'},
+        {des: "D", title: "梅花老K", num: '13', open: false, name: 'K'},
+        {des: "Z", title: "大王", num: '21', open: false, name: 'JOKER'},
+        {des: "V", title: "小王", num: '22', open: false, name: 'JOKER'}
+      ],
+      cardsOld: [],                 //总牌
+      MMcards: [],                  //玩家N1的牌
+      MMQcards: [],                 //玩家N1钓的牌
+      BBcards: [],                  //玩家N2的牌
+      BBQcards: [],                 //玩家N2钓的牌
+      UScards: [],                  //玩家N3的牌
+      USQcards: [],                 //玩家N3钓的牌
+      DDcards: [],                  //玩家N4的牌
+      DDQcards: [],                 //玩家N4钓的牌
+      OPENcards: [],                //桌面上翻起的牌
+      GPcards: [],                  //桌面上剩下的牌
+      FPJSQ: null,                  //发牌计时器
+      option: {A: 'true',B: 'true'},          //按钮操作相关的开关
+      DiaoQ: {chu: '', diao: '', fang: ''}     //钓红点-出-钓-计时器
+    }
+  },
+  methods: {
+    // 洗牌
+    shuffle(arr) {
+      var i, j, temp;
+      for (i = arr.length - 1; i > 0; i--) {
+          j = Math.floor(Math.random() * (i + 1));
+          temp = arr[i];
+          arr[i] = arr[j];
+          arr[j] = temp;
+      }
+      return arr;
+    },
+    //洗牌
+    startCard() {
+      this.cards = this.$options.methods.shuffle(this.cards);
+      this.$forceUpdate();
+      this.ad = !this.ad;
+      this.option.A = !this.option.A;
+    },
+    // 切牌与翻牌
+    deskCard(cardNum,cardIndex) {
+      this.cards[cardIndex].open = true;
+
+      let DiaoQF;
+      if (cardNum < 10) {
+        DiaoQF = 10 - cardNum;
+      } else {
+        DiaoQF = cardNum;
+      }
+      function checkAdult(item) {
+          return (item.num == parseInt(DiaoQF));
+      }
+
+      let DiaoA = this.OPENcards.filter(checkAdult);
+      //   window.console.log(`未:${this.option.B}`)
+
+      if(this.option.B) {
+        //切牌
+        this.cardsOld = this.cards.splice(0, cardIndex);
+        this.cards = this.cards.concat(this.cardsOld);
+
+        // 发牌
+        this.FPJSQ = setInterval(() => {
+          if (this.cards.length == 54 || this.cards.length == 50 || this.cards.length == 46 || this.cards.length == 42 || this.cards.length == 38 || this.cards.length == 34) {
+            this.cards[this.cards.length-1].open = true;
+            this.MMcards.unshift(this.cards.pop())
+          } else if (this.cards.length == 53 || this.cards.length == 49 || this.cards.length == 45 || this.cards.length == 41 || this.cards.length == 37 || this.cards.length == 33) {
+            this.BBcards.unshift(this.cards.pop())
+          } else if (this.cards.length == 52 || this.cards.length == 48 || this.cards.length == 44 || this.cards.length == 40 || this.cards.length == 36 || this.cards.length == 32) {
+            this.UScards.unshift(this.cards.pop())
+          } else if (this.cards.length == 51 || this.cards.length == 47 || this.cards.length == 43 || this.cards.length == 39 || this.cards.length == 35 || this.cards.length == 31) {
+            this.DDcards.unshift(this.cards.pop())
+          } else if (this.cards.length <= 30 && this.cards.length > 24) {
+            this.cards[this.cards.length-1].open = true;
+            this.OPENcards.unshift(this.cards.pop())
+          } else {
+            clearInterval(this.FPJSQ);
+          }
+        }, 50)
+        this.option.B = !this.option.B;
+        window.console.log(this.option.B)
+        // 发牌 end
+      } else {
+        window.console.log(`AA ${DiaoA}`)
+        if (DiaoA != '') {
+          this.MMQcards.unshift(this.cards.pop())
+          if (this.OPENcards.filter(checkAdult).length == 1) {
+            this.OPENcards.splice(this.OPENcards.indexOf(DiaoA[0]),1)
+            this.MMQcards.unshift(DiaoA[0])
+          }
+          else {
+            let Dred = DiaoA.find((QA) => { return QA.des == 'A' || QA.des == 'C'})
+            this.OPENcards.splice(this.OPENcards.indexOf(Dred),1)
+            this.MMQcards.unshift(Dred)
+          }
+        }
+         else {
+          this.OPENcards.unshift(this.cards.pop())
+        }
+      }
+    },
+    //出牌\钓牌规则
+    DIAOchu(cardNum,cardIndex) {
+      this.MMcards[cardIndex].open = true;
+
+      let DiaoQD;
+      if (cardNum < 10) {
+        DiaoQD = 10 - cardNum;
+      } else {
+        DiaoQD = cardNum;
+      }
+
+      function checkAdult(item) {
+          return (item.num == parseInt(DiaoQD));
+      }
+      let DiaoA = this.OPENcards.filter(checkAdult)
+      if (DiaoA != '') {
+        this.MMQcards.unshift(this.MMcards.splice(cardIndex,1)[0])
+        if (this.OPENcards.filter(checkAdult).length == 1) {
+          this.OPENcards.splice(this.OPENcards.indexOf(DiaoA[0]),1)
+          this.MMQcards.unshift(DiaoA[0])
+        } else {
+          window.console.log(DiaoA)
+          let Dred = DiaoA.find((QA) => { return QA.des == 'A' || QA.des == 'C'})
+          window.console.log(Dred)
+          this.OPENcards.splice(this.OPENcards.indexOf(Dred),1)
+          this.MMQcards.unshift(Dred)
+        }
+      } else {
+        this.OPENcards.unshift(this.MMcards.splice(cardIndex,1)[0])
+      }
+
+        window.console.log(cardIndex);
+      // 执行翻牌动作
+      this.$options.methods.deskCard(cardNum,cardIndex);
+    },
+    DIAOdiao(cardDes) {
+      this.DiaoQ.diao = cardDes;
+      window.console.log(`D${this.DiaoQ.diao}`);
+      // if (this.DiaoQ.chu ) {
+        
+      // }
+    },
+    DIAOqi(cardDes) {
+      this.DiaoQ.qi = cardDes;
+      window.console.log('Q' + this.DiaoQ.qi)
+    },
+    DIAOCard() {
+      this.DiaoQ.qi = this.MMcards.num;
+      if (this.DiaoQ.qi === '') {
+        this.DiaoQ.diao = this.MMcards.num
+      }
+      window.console.log('H' + this.DiaoQ.qi)
+      window.console.log('G' + this.DiaoQ.diao)
+    }
+  },
+  mounted() {
+    this.startCard()
+  }
+  // computed: {}
+}
+</script>
+
+<style lang="scss" scoped>
+
+</style>
