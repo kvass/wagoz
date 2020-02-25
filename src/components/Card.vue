@@ -1,10 +1,5 @@
 <template>
 <div>
-    <h2>{{deskId}}</h2>
-  <button @click="startCard" v-if="option.A">开始</button>
-  <ul class="oringeCard">
-    <li v-for="(card, index) in cards" @click="deskCard(card.num,index)" v-bind:class="[card.des, {open: card.open}]" :key='index' v-bind:title='card._id'>{{card.name}}</li>
-  </ul>
   <section class="you">
     <ul>
       <li v-for="(card, index) in MMcards" @click="DIAOchu(card.num,index)" v-bind:class="[card.des, {open: card.open}]" :key='index' v-bind:title='card._id'>{{card.name}}</li>
@@ -226,35 +221,5 @@ export default {
 .relative {
   position: relative;
   overflow: auto;
-}
-.move-enter {
-  position: absolute;
-  z-index: 9999;
-  top: -500px;
-}
-.move-enter-active {
-  position: absolute;
-  z-index: 9999;
-  transition: all 1s;
-}
-.move-enter-to {
-  position: absolute;
-  z-index: 9999;
-  top: 0;
-}
-
-.move-leave {
-  position: absolute;
-  z-index: 9999;
-  left: 0;
-  box-shadow: 0 0 5px #333;
-}
-.move-leave-active {
-  position: absolute;
-  z-index: 9999;
-  transition: all 1s;
-}
-.move-leave-to {
-  left: 500px;
 }
 </style>

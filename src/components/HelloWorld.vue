@@ -1,115 +1,160 @@
 <template>
- <div class="test3">
-  <div class="msg" ref="box">
-   <div v-for="item in list" :key="msg-item" :class="[item.type,'msg-item']">
-    <p>
-     {{item.content}}
-    </p>
-   </div>
-  </div>
-  <div class="input-group">
-   <input type="text" v-model="contentText">
-   <button @click="sendText">发送</button>
-  </div>
- </div>
+    <div>
+        <ol>
+            <li v-for="(mem, index) in users" @click="chooseRole(index)" :key='index' v-bind:class="[{empty: !mem.state}, {'Y': index == youIndex}]">{{mem.name}}<span>{{mem.id}}</span></li>
+        </ol>
+        <h2>{{deskId}}</h2>
+        <button @click="startCard" :disabled="!startGo" v-bind:class="['btnStart', {'active': startGo}]">开始</button>
+        <ul class="oringeCard">
+            <li v-for="(card, index) in cards" @click="deskCard(card.num,index)" v-bind:class="[card.des, {open: !card.open}]" :key='index' v-bind:title='card._id'>{{card.name}}</li>
+        </ul>
+    </div>
 </template>
-
 <script>
- export default {
-  name: "index3",
-  data() {
-   return {
-    list: [],//聊天记录的数组
-    contentText: "",//input输入的值
-   }
-  },
-  methods: {
-   //发送聊天信息
-    sendText() {
-    let that = this;
-    this.list = [...this.list, {type: "mine", content: this.contentText}];//通过type字段进行区分是自己（mine）发的还是系统（robot）返回的
-    this.backText(function () {
-     that.contentText = "";//加回调在得到返回数据的时候清除输入框的内容
-    });
-   },
-   backText(callback) {
-    let that = this;
-    if (window.WebSocket) {
-     let ws = new WebSocket("ws://localhost:8001/");
-     ws.onopen = function (e) {
-      window.console.log("链接服务器成功");
-      window.console.log("that.contentText is" + e.data, that.contentText);
-      ws.send(that.contentText);
-      callback();
-     };
-     ws.onclose = function (e) {
-      window.console.log("服务器关闭" + e.data)
-     };
-     ws.onerror = function () {
-      window.console.log("服务器出错")
-     };
-     ws.onmessage = function (e) {
-      that.list = [...that.list, {type: "robot", content: e.data}]
-     }
+export default{
+    data: () => {
+        return {
+            msg:"aaaa",
+            backdata:'',
+            users: [
+                {code: 'Z', state: false, id: '', name: '寨'},
+                {code: 'L', state: false, id: '', name: '陆'},
+                {code: 'F', state: false, id: '', name: '峰'}
+            ],
+            youIndex: '-1',
+            cards: [],
+            deskId: '',
+            startGo: true
+        }
+    },
+    sockets:{  //在此接收又服务器发送过来的数据  ps：注意此处的方法名要与服务器的发送的事件保持一致才能接收到
+        connect: function() {            //与ws:127.0.0.1:8000连接后回调
+            // window.console.log('vue socket 连接成功');
+        },
+        TT: function(value) {
+            // window.console.log(value);//监听login(后端向前端emit  login的回调)
+            this.backdata=value;
+        },
+        roleMSG: function(msg) {
+            this.users = msg;
+        },
+        YesiamMSG2: function(msg) {
+            // this.youIndex = msg;
+            window.console.log('session里的:' + msg)
+        }
+    },
+    methods:{
+        // 打乱
+        shuffle(arr) {
+        var i, j, temp;
+        for (i = arr.length - 1; i > 0; i--) {
+            j = Math.floor(Math.random() * (i + 1));
+            temp = arr[i];
+            arr[i] = arr[j];
+            arr[j] = temp;
+        }
+        return arr;
+        },
+        //洗牌
+        startCard() {
+            this.cards = this.$options.methods.shuffle(this.cards);
+            this.$forceUpdate();
+            this.$http.post('http://localhost:3000/desk', this.cards).then(res => {
+                // window.console.log(res.data)
+                this.deskId = res.data[0]._id
+            });
+        },
+        Login(){
+            this.$socket.emit('login', this.msg);
+        },
+        // 挑选角色
+        chooseRole(mIndex) {
+            if (this.youIndex == '-1') {
+                if (!this.users[mIndex].state) {
+                    this.users[mIndex].state = true
+                    this.youIndex = mIndex
+                    this.$socket.emit('chooseRole', this.users, mIndex)
+                }
+            } else {
+                if (this.youIndex != mIndex) {
+                    if (!this.users[mIndex].state) {
+                        this.users[this.youIndex].state = false
+                        this.users[mIndex].state = true
+                        this.youIndex = mIndex
+                        this.$socket.emit('chooseRole', this.users, mIndex)
+                    }
+                }
+            }
+        }
+    },
+    mounted() {
+        this.$http('http://localhost:3000/goods').then((res) => this.cards = res.data)
     }
-   }
-  },
-  watch: {
-   //监听list,当有修改的时候进行div的屏幕滚动，确保能看到最新的聊天
-   list: function () {
-    let that = this;
-    setTimeout(() => {
-     that.$refs.box.scrollTop = that.$refs.box.scrollHeight;
-    }, 0);
-    //加setTimeout的原因：由于vue采用虚拟dom，我每次生成新的消息时获取到的div的scrollHeight的值是生成新消息之前的值，所以造成每次都是最新的那条消息被隐藏掉了
-   }
-  },
-  mounted() {
   }
- };
-
-
 </script>
 
 <style scoped lang="scss">
- .test3 {
-  text-align: center;
-  height: 500px;
-  width: 500px;
-  border: 5px solid #ddd;
- }
-
- .msg {
-  width: 400px;
-  height: 400px;
-  overflow: auto;
-  padding-top: 5px;
-  border: 1px solid red;
-  display: inline-block;
-  margin-bottom: 6px;
-
-  .msg-item {
-   position: relative;
-   overflow: hidden;
-   p {
-    display: inline-block;
-    border-radius: 40px;
-    background: #3C3D5A;
-    color: white;
-    padding: 2px 12px;
-    margin: 0 0 2px 0;
-    max-width: 70%;
-    text-align: left;
-    box-sizing: border-box;
-   }
-
-   &.mine {
-    p {
-     float: right;
-     background: aquamarine;
-     color: white;
+.btnStart {
+    display: block;
+    margin: 50px auto;
+    width: 220px;
+    height: 80px;
+    line-height: 80px;
+    outline: 0;
+    border-radius: 8px;
+    border: 2px solid #999;
+    background: #ccc;
+    color: #666;
+    font-size: 25px;
+    text-align: center;
+    cursor: pointer;
+    &.active {
+        border: 0;
+        background: #6291CD;
+        color: #fff;
+        &:hover {
+            box-shadow: 0 0 5px rgba($color: #6291cd, $alpha: .5)
+        }
     }
-   }
-  }
- }
+}
+    ol {
+        display: flex;
+        margin: 100px auto;
+        width: 500px;
+        justify-content: center;
+        li {
+            margin: 15px;
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            border: 2px solid #EDAC02;
+            background: #EDAC02;
+            text-align: center;
+            font-size: 60px;
+            color: #fff;
+            line-height: 120px;
+            cursor: pointer;
+            box-shadow: 0 0 5px rgba($color: #EDAC02, $alpha: .7);
+            &:nth-child(2) {
+                border-color: #EA9288;
+                background: #EA9288;
+                box-shadow: 0 0 5px rgba($color: #EA9288, $alpha: .7)
+            }
+            &:nth-child(3) {
+                border-color: #98D1E7;
+                background: #98D1E7;
+                box-shadow: 0 0 5px rgba($color: #6291CD, $alpha: .7)
+            }
+            &.empty {
+                border-color: #dcdcdc!important;
+                background: #f3f4f5;
+                color: #999;
+                box-shadow: none;
+            }
+            &.Y {
+                border-color: red!important;
+            }
+            span {display: block;margin-top: -35px;font-size: 6px;line-height: 20px;color: #000;}
+        }
+    }
 </style>
