@@ -1,13 +1,9 @@
 <template>
-    <div>
+    <div v-bind:class="{memberBar: !showHW}">
+        <h2>{{wwwc}}</h2>
         <ol>
-            <li v-for="(mem, index) in users" @click="chooseRole(index)" :key='index' v-bind:class="[{empty: !mem.state}, {'Y': index == youIndex}]">{{mem.name}}<span>{{mem.id}}</span></li>
+            <li v-for="(user, index) in users" @click="chooseRole(index)" :key='index' v-bind:class="[{empty: !user.state}, {'Y': index == youIndex}]">{{user.code}}<span>{{user.id}}</span></li>
         </ol>
-        <h2>{{deskId}}</h2>
-        <button @click="startCard" :disabled="!startGo" v-bind:class="['btnStart', {'active': startGo}]">开始</button>
-        <ul class="oringeCard">
-            <li v-for="(card, index) in cards" @click="deskCard(card.num,index)" v-bind:class="[card.des, {open: !card.open}]" :key='index' v-bind:title='card._id'>{{card.name}}</li>
-        </ul>
     </div>
 </template>
 <script>
@@ -17,78 +13,94 @@ export default{
             msg:"aaaa",
             backdata:'',
             users: [
-                {code: 'Z', state: false, id: '', name: '寨'},
-                {code: 'L', state: false, id: '', name: '陆'},
-                {code: 'F', state: false, id: '', name: '峰'}
+                {code: 'Z', state: false, sid: '', name: '寨', sort: ''},
+                {code: 'L', state: false, sid: '', name: '陆', sort: ''},
+                {code: 'F', state: false, sid: '', name: '峰', sort: ''}
             ],
             youIndex: '-1',
+            youCode: '',
             cards: [],
+            panId: '',
             deskId: '',
-            startGo: true
+            socketID: '',
+            wwwc: '',
+            showHW: true
         }
     },
-    sockets:{  //在此接收又服务器发送过来的数据  ps：注意此处的方法名要与服务器的发送的事件保持一致才能接收到
-        connect: function() {            //与ws:127.0.0.1:8000连接后回调
-            // window.console.log('vue socket 连接成功');
+    sockets:{  //在此接收由服务器发送过来的数据
+        connect: function() {
+            window.console.log('HW 连接成功');
+            this.youIndex == '-1'
         },
-        TT: function(value) {
-            // window.console.log(value);//监听login(后端向前端emit  login的回调)
-            this.backdata=value;
+        disconnect: function() {
+            window.console.log('HW socket 断开了')
+        },
+        reconnect: function() {
+            window.console.log('HW 重新联系')
+        },
+        DCutMsg2: function(msg) {
+            window.console.log(msg)
+            this.wwwc = msg
         },
         roleMSG: function(msg) {
             this.users = msg;
         },
-        YesiamMSG2: function(msg) {
-            // this.youIndex = msg;
-            window.console.log('session里的:' + msg)
+        DStartMsg: function (msg) {
+            this.showHW = msg[0]
+            let nowUsers = msg[2]
+            let myIndex = nowUsers.findIndex(item => item.code == this.youCode);
+            if (myIndex == 0) {
+                let listOld = nowUsers.pop();
+                nowUsers.unshift(listOld);
+            } else if (myIndex == 2) {
+                let listOld = nowUsers.shift();
+                nowUsers.push(listOld);
+            }
+            this.users = nowUsers
+        },
+        YesiamMSG2: function (params) {
+            window.console.log(params);
         }
+        // DStartMsg: function(msg) {
+        //     this.cards = msg[0]
+        //     this.panId = msg[1]
+        //     this.deskId = msg[2]
+        // } //DStartMsg end
     },
     methods:{
-        // 打乱
-        shuffle(arr) {
-        var i, j, temp;
-        for (i = arr.length - 1; i > 0; i--) {
-            j = Math.floor(Math.random() * (i + 1));
-            temp = arr[i];
-            arr[i] = arr[j];
-            arr[j] = temp;
-        }
-        return arr;
-        },
-        //洗牌
-        startCard() {
-            this.cards = this.$options.methods.shuffle(this.cards);
-            this.$forceUpdate();
-            this.$http.post('http://localhost:3000/desk', this.cards).then(res => {
-                // window.console.log(res.data)
-                this.deskId = res.data[0]._id
-            });
-        },
-        Login(){
-            this.$socket.emit('login', this.msg);
-        },
         // 挑选角色
         chooseRole(mIndex) {
-            if (this.youIndex == '-1') {
-                if (!this.users[mIndex].state) {
-                    this.users[mIndex].state = true
-                    this.youIndex = mIndex
-                    this.$socket.emit('chooseRole', this.users, mIndex)
-                }
-            } else {
-                if (this.youIndex != mIndex) {
+            let userChNum = this.users.filter(item => item.state == true).length;
+            if (userChNum < 4) {
+                if (this.youIndex == '-1') {
                     if (!this.users[mIndex].state) {
-                        this.users[this.youIndex].state = false
                         this.users[mIndex].state = true
                         this.youIndex = mIndex
+                        this.youCode = this.users[mIndex].code
                         this.$socket.emit('chooseRole', this.users, mIndex)
+                    }
+                } else {
+                    if (this.youIndex != mIndex) {
+                        if (!this.users[mIndex].state) {
+                            this.users[this.youIndex].state = false
+                            this.users[mIndex].state = true
+                            this.$socket.emit('chooseRole', this.users, mIndex, this.youIndex)
+                            window.console.log(mIndex, this.youIndex)
+                            this.youIndex = mIndex
+                            this.youCode = this.users[mIndex].code
+                        }
                     }
                 }
             }
-        }
+        }, //chooseRole end
+        //创建desk & 开始
+        createDesk() {
+            this.$socket.emit('createDesk', this.users);
+            // this.$emit('toCardCom', 'Card');
+        } //DStart end
     },
     mounted() {
-        this.$http('http://localhost:3000/goods').then((res) => this.cards = res.data)
+        // this.$http('http://localhost:3000/goods').then((res) => this.cards = res.data)
     }
   }
 </script>
@@ -117,6 +129,7 @@ export default{
         }
     }
 }
+
     ol {
         display: flex;
         margin: 100px auto;
@@ -157,4 +170,30 @@ export default{
             span {display: block;margin-top: -35px;font-size: 6px;line-height: 20px;color: #000;}
         }
     }
+.memberBar {
+    ol {
+        margin: 0;
+        li {
+            position: absolute;
+            position: fixed;
+            width: 50px;
+            height: 50px;
+            font-size: 32px;
+            line-height: 50px;
+            z-index: 9999;
+            &:nth-child(1) {
+                left: 20px;
+                top: 20px;
+            }
+            &:nth-child(2) {
+                left: 20px;
+                bottom: 20px;
+            }
+            &:nth-child(3) {
+                right: 20px;
+                top: 20px;
+            }
+        }
+    }
+}
 </style>

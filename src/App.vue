@@ -1,20 +1,53 @@
 <template>
   <div id="app">
-    <HelloWorld msg="钓红点"/>
-    <Card />
+      <!-- <component :is='currentCom' @toCardCom='changeCom' /> -->
+       <!-- :getDeskID='{deskID,users}' -->
+      <HelloWorld />
+      <Card v-show="!showHW" />
   </div>
 </template>
 
 <script>
 import HelloWorld from './components/HelloWorld.vue'
-import Card from './components/Card.vue'
+import       Card from './components/Card.vue'
 
 
 export default {
-  name: 'app',
-  components: {
-    HelloWorld,
-    Card
+    name: 'app',
+    components: {
+        HelloWorld,
+        Card
+    },
+    data() {
+        return {
+            currentCom: 'HelloWorld',
+            showHW: true,
+            deskID: '',
+            users: ''
+        }
+    },
+    sockets:{  //在此接收由服务器发送过来的数据
+        connect: function() {
+            window.console.log('AS 连接成功');
+        },
+        DStartMsg: function(msg) {
+            this.showHW = msg[0]
+            // this.deskID = msg[1]
+            // this.users = msg[2]
+        } //createDeskMsg end
+    },
+    methods: {
+        // changeCom(vul) {
+        //     // this.currentCom = vul
+        // }
+    },//methods end
+  computed: {
+
+  },
+  created() {
+    // if (!this.roles.includes('admin')) {
+    //   this.currentRole = 'editorDashboard'
+    // }
   }
 }
 </script>
