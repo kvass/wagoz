@@ -33,6 +33,8 @@ export default {
   data() {
     return {
       cards: [
+        {des: "Z", title: "大王", num: '20', open: false, name: 'JOKER'},
+        {des: "V", title: "小王", num: '21', open: false, name: 'JOKER'},
         {des: "A", title: "红桃尖", num: '1', open: false, name: 'A'},
         {des: "A", title: "红桃二", num: '2', open: false, name: '2'},
         {des: "A", title: "红桃三", num: '3', open: false, name: '3'},
@@ -84,9 +86,7 @@ export default {
         {des: "D", title: "梅花十", num: '10', open: false, name: '10'},
         {des: "D", title: "梅花勾", num: '11', open: false, name: 'J'},
         {des: "D", title: "梅花皮蛋", num: '12', open: false, name: 'Q'},
-        {des: "D", title: "梅花老K", num: '13', open: false, name: 'K'},
-        {des: "Z", title: "大王", num: '21', open: false, name: 'JOKER'},
-        {des: "V", title: "小王", num: '22', open: false, name: 'JOKER'}
+        {des: "D", title: "梅花老K", num: '13', open: false, name: 'K'}
       ],
       cardsOld: [],                 //总牌
       MMcards: [],                  //玩家N1的牌
@@ -224,7 +224,7 @@ export default {
       this.DiaoQ.diao = cardDes;
       window.console.log(`D${this.DiaoQ.diao}`);
       // if (this.DiaoQ.chu ) {
-        
+
       // }
     },
     DIAOqi(cardDes) {
