@@ -2,9 +2,9 @@
   <div id="app">
       <!-- <component :is='currentCom' @toCardCom='changeCom' /> -->
        <!-- :getDeskID='{deskID,users}' -->
-      <HelloWorld />
-      <Card v-show="!showHW" @showModal='showModal' />
-      <Modal v-show='option.modal' />
+      <HelloWorld :users='users' :mycode='myCode' @mychoose='mychooseCode' />
+      <Card v-show="options.CShow" @showModal='showModal' :users='changeU(users)' :mycode='myCode' />
+      <Modal v-show='options.modal' />
   </div>
 </template>
 
@@ -24,31 +24,69 @@ export default {
     data() {
         return {
             currentCom: 'HelloWorld',
-             showHW: true,
-             deskID: '',
-              users: '',
-            option: {modal: false}
+            showHW: true,
+            deskID: '',
+            users: [
+                {code: 'Z', state: false, sid: '', name: '寨', playing: false, sort: ''},
+                {code: 'L', state: false, sid: '', name: '陆', playing: false, sort: ''},
+                {code: 'F', state: false, sid: '', name: '峰', playing: false, sort: ''}
+            ],
+            myCode: '',
+            options: {modal: false, CShow: false, Start: false}
         }
     },
     sockets:{  //在此接收由服务器发送过来的数据
         connect: function() {
             window.console.log('AS 连接成功');
         },
-        DStartMsg: function(msg) {
+        roleMSG: function(msg) {
+            this.users = msg;
+        },
+        DStartMsg: function (msg) {
             //返回：状态‘否’、deskID、pan的参与者
-            this.showHW = msg[0]
-            // this.modelOp = msg[0]
-            // this.deskID = msg[1]
-            // this.users = msg[2]
-        } //createDeskMsg end
+            this.options.CShow = true
+            this.options.Start = true
+            this.users = msg[2]
+            // this.youIndex = 1
+        }, // DStartMsg end
+        DCutMsg: function(msg) {
+            this.users = msg[2]
+        }, //DCutMsg
+        DiaoMsg: function(msg) {
+            this.users = msg[1]
+        },//DiaoMsg
+        endMsg: function () {
+            this.options.CShow = !this.options.CShow
+        },
+        againPMsg: function () {
+            this.options.CShow = !this.options.CShow
+        }
     },
     methods: {
         showModal(val) {
             window.console.log(val)
-            this.option.modal = !this.option.modal
+            this.options.modal = !this.options.modal
         },
         hideModal(val) {
-            this.option.modal = val
+            this.options.modal = val
+        },
+        mychooseCode(val) {
+            this.myCode = val
+        },
+        changeU(arr) {
+            if (this.options.Start) {
+                let myIndex = arr.findIndex(item => item.code == this.myCode);
+                if (myIndex == 0) {
+                    let listOld = arr.pop();
+                    arr.unshift(listOld);
+                } else if (myIndex == 2) {
+                    let listOld = arr.shift();
+                    arr.push(listOld);
+                }
+                return arr
+            } else {
+                return arr
+            }
         }
         // changeCom(vul) {
         //     // this.currentCom = vul
