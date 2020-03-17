@@ -52,6 +52,9 @@ export default {
         DCutMsg: function(msg) {
             this.users = msg[2]
         }, //DCutMsg
+        dealCardMsg: function(msg) {
+            this.users = msg[1]
+        },
         DiaoMsg: function(msg) {
             this.users = msg[1]
         },//DiaoMsg

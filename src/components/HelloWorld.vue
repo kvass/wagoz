@@ -108,6 +108,7 @@ export default{
                     }
                 }
             }
+            // this.$http('http://127.0.0.1:8098/desk', 'VUE添加破杏花春雨').then((res) => window.console.log(res.data + '挑选了角色'))
         }, //chooseRole end
         //创建desk & 开始
         createDesk() {
@@ -123,7 +124,7 @@ export default{
         }
     },
     mounted() {
-        // this.$http('http://localhost:3000/goods').then((res) => this.cards = res.data)
+        // this.$http('http://127.0.0.1:8098/qins').then((res) => this.cards = res.data)
     }
   }
 </script>

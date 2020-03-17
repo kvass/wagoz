@@ -59,7 +59,7 @@ export default {
             this.option.DC = !this.option.DC
         }, //DCutMsg
         dealCardMsg: function(msg) {
-            this.cards = msg
+            this.cards = msg[0]
         },
         DiaoMsg: function(msg) {
             this.cards = msg[0]
@@ -102,8 +102,6 @@ export default {
                 let myCode = this.cards[NCIndex].own
                 this.cards[NCIndex].own = 'NC' + myCode
                 this.cards[NCIndex].open = true
-                this.users[1].playing = false
-                this.users[2].playing = true
                 this.$socket.emit('Diao', this.cards, myCode, this.panID, this.users);
             } else {
                 window.console.log('点了但没用')
