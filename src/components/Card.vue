@@ -8,10 +8,10 @@
       <div v-for="(card, index) in cFilter(cards, 'NC' + users[1].code)" v-bind:class="[card.des, 'nc', {open: card.open}]" :key='"NC" + index'>{{card.name}}</div>
     </div>
     <div class="UPcards">
-      <div v-for="(card, index) in cFilter(cards, users[0].code)" :key='users[0].code + index'>{{users[0].code}}</div>
+      <div v-for="(card, index) in cFilter(cards, users[0].code)" :key='users[0].code + index'></div>
     </div>
     <div class="UNcards">
-      <div v-for="(card, index) in cFilter(cards, users[2].code)" :key='users[2].code + index'>{{users[2].code}}</div>
+      <div v-for="(card, index) in cFilter(cards, users[2].code)" :key='users[2].code + index'></div>
     </div>
     <div v-bind:class="['UMcards', {des: !users[1].playing}]">
       <div v-for="(card, index) in cFilter(cards, users[1].code)" @click="Diao(card._id)" v-bind:class="[card.des, {open: !card.open}, {active: users[1].playing}]" :key='users[1].code + index' v-bind:title='card.title'>{{card.name}}</div>
@@ -37,7 +37,8 @@ export default {
     },
     props: [
         'users',
-        'mycode'
+        'mycode',
+        'room'
     ],
     sockets: {  //在此接收由服务器发送过来的数据
         connect: function() {
@@ -45,7 +46,6 @@ export default {
         },
         DStartMsg: function(msg) {
             this.showHW = msg[0]
-            this.deskID = msg[1]
             window.console.log('初始条件')
             window.console.log(msg[2])
             this.myCode = this.users[1].code
@@ -55,7 +55,6 @@ export default {
         }, //sendCards end
         DCutMsg: function(msg) {
             this.panID = msg[0]
-            this.deskID = msg[3]
             this.option.DC = !this.option.DC
         }, //DCutMsg
         dealCardMsg: function(msg) {
@@ -79,6 +78,8 @@ export default {
             });
         },
         DCut(cardIndex) {
+            window.console.log(this.users)
+            window.console.log(this.users[1].playing)
             if (this.users[1].playing) {
                 window.console.log('切牌了马在跑')
                 let cardsOld = this.cards.splice(0, cardIndex);
@@ -96,6 +97,8 @@ export default {
         },
         //出牌
         Diao(id) {
+            window.console.log(this.users)
+            window.console.log(this.users[1].playing)
             if (this.users[1].playing) {
                 window.console.log('点了马在跑')
                 let NCIndex = this.cards.findIndex(item => item._id == id)

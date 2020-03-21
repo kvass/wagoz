@@ -2,8 +2,8 @@
   <div id="app">
       <!-- <component :is='currentCom' @toCardCom='changeCom' /> -->
        <!-- :getDeskID='{deskID,users}' -->
-      <HelloWorld :users='users' :mycode='myCode' @mychoose='mychooseCode' />
-      <Card v-show="options.CShow" @showModal='showModal' :users='changeU(users)' :mycode='myCode' />
+      <HelloWorld :users='users' :mycode='myCode' @mychoose='mychooseCode' :room='deskID' />
+      <Card v-show="options.CShow" @showModal='showModal' :users='changeU(users)' :mycode='myCode' :room='deskID' />
       <Modal v-show='options.modal' />
   </div>
 </template>
@@ -42,10 +42,15 @@ export default {
         roleMSG: function(msg) {
             this.users = msg;
         },
+        sendCode: function(msg) {
+            this.myCode = msg
+            window.console.log(this.myCode)
+        },
         DStartMsg: function (msg) {
             //返回：状态‘否’、deskID、pan的参与者
             this.options.CShow = true
             this.options.Start = true
+            this.deskID = msg[1]
             this.users = msg[2]
             // this.youIndex = 1
         }, // DStartMsg end
@@ -102,6 +107,9 @@ export default {
     // if (!this.roles.includes('admin')) {
     //   this.currentRole = 'editorDashboard'
     // }
+    },
+    mounted() {
+        this.$http('http://127.0.0.1:8098/')
     }
 }
 </script>

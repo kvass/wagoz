@@ -3,7 +3,7 @@
         <div v-bind:class="['deskBG', {play: options.play}]" v-show="options.userbar">
             <h2></h2>
             <div v-bind:class="'usersBar'">
-                <div v-for="(user, index) in users" @click="chooseRole(index)" :key='index' v-bind:class="[user.code, {empty: !user.state}, {active: user.playing}, {'Y': index == youIndex}]"><span>{{user.id}}</span></div>
+                <div v-for="(user, index) in users" @click="chooseRole(index)" :key='index' v-bind:class="[user.code, {empty: !user.state}, {active: user.playing}, {'Y': user.code == mycode}]"><span>{{user.id}}</span></div>
             </div>
             <div class='timeLine'></div>
         </div>
@@ -49,13 +49,12 @@ export default{
     },
     props: [
         'users',
-        'mycode'
+        'mycode',
+        'room'
     ],
     sockets:{  //在此接收由服务器发送过来的数据
         connect: function() {
             window.console.log('HW 连接成功');
-            // this.$socket.emit('reload', this.users)
-            window.console.log('HW 又跑了一次连接成功');
         },
         disconnect: function() {
             window.console.log('HW socket 断开了')
@@ -63,8 +62,8 @@ export default{
         reconnect: function() {
             window.console.log('HW 重新连接')
         },
-        reloadMSG: function (msg) {
-            this.users = msg
+        reloadMSG: function () {
+            // this.users = msg
             this.youIndex = -1
         },
         DStartMsg: function () {
@@ -86,23 +85,21 @@ export default{
         chooseRole(mIndex) {
             let userChNum = this.users.filter(item => item.state == true).length;
             if (userChNum < 4) {
-                if (this.youIndex == -1) {
+                if (this.mycode == '') {
                     if (!this.users[mIndex].state) {
                         this.users[mIndex].state = true
-                        this.youIndex = mIndex
                         let code = this.users[mIndex].code
                         this.$socket.emit('chooseRole', this.users, mIndex)
                         this.$emit('mychoose', code)
                     }
                 } else {
-                    if (this.youIndex != mIndex) {
+                    if (this.mycode != this.users[mIndex].code) {
                         if (!this.users[mIndex].state) {
-                            this.users[this.youIndex].state = false
+                            let oldI = this.users.findIndex(item => item.code == this.mycode)
+                            this.users[oldI].state = false
                             this.users[mIndex].state = true
-                            this.$socket.emit('chooseRole', this.users, mIndex, this.youIndex)
-                            // window.console.log(mIndex, this.youIndex)
+                            this.$socket.emit('chooseRole', this.users, mIndex, oldI)
                             let code = this.users[mIndex].code
-                            this.youIndex = mIndex
                             this.$emit('mychoose', code)
                         }
                     }
@@ -116,7 +113,7 @@ export default{
             // this.$emit('toCardCom', 'Card');
         }, //DStart end
         againPlay() {
-            this.$socket.emit('againPlay');
+            this.$socket.emit('againPlay', this.room);
 
         }, //againPlay end
         exit() {
@@ -124,7 +121,7 @@ export default{
         }
     },
     mounted() {
-        // this.$http('http://127.0.0.1:8098/qins').then((res) => this.cards = res.data)
+        // this.$http('http://127.0.0.1:8098/').then((res) => this.cards = res.data)
     }
   }
 </script>
