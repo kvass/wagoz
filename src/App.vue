@@ -109,7 +109,8 @@ export default {
     // }
     },
     mounted() {
-        this.$http('http://127.0.0.1:8098/')
+        // this.$http('http://127.0.0.1:8098/')
+        this.$http('https://api.wagoz.cn')
     }
 }
 </script>

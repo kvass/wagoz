@@ -1,0 +1,624 @@
+@charset "UTF-8";
+html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, img, ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var, b, u, i, center, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td, article, aside, canvas, details, embed, figure, figcaption, footer, header, hgroup, menu, nav, output, ruby, section, summary, time, mark, audio, video {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font-size: 100%;
+  font: inherit;
+  vertical-align: baseline;
+  text-decoration: none;
+}
+
+article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, section {
+  display: block;
+}
+
+body {
+  line-height: 1;
+  font-family: "Helvetica Neue Light", "Helvetica Neue", Helvetica, "Microsoft Yahei", "WenQuanYi Micro Hei", "Lucida Grande", sans-serif;
+}
+
+ol, ul {
+  list-style: none;
+}
+
+blockquote, q {
+  quotes: none;
+}
+
+blockquote:before, blockquote:after, q:before, q:after {
+  content: "";
+  content: none;
+}
+
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
+a {
+  text-decoration: none;
+}
+
+*, *:after, *::before {
+  box-sizing: border-box;
+}
+
+.move {
+  animation-name: move;
+  animation-duration: 10s;
+}
+
+@keyframes animSlideTop {
+  0% {
+    transform: translate3d(0, -100%, 0);
+  }
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+}
+@keyframes move {
+  0% {
+    width: 100%;
+  }
+  100% {
+    width: 0;
+  }
+}
+@keyframes light {
+  0% {
+    box-shadow: 0 1px 2px rgba(6, 44, 6, 0.1);
+  }
+  100% {
+    box-shadow: 0 0 1.56vh 1.56vh rgba(173, 226, 32, 0.8), 0 0 1.56vh 1.56vh rgba(173, 226, 32, 0.8) inset;
+  }
+}
+@keyframes spin {
+  100% {
+    transform: rotateZ(360deg);
+  }
+}
+#app {
+  background: url(./images/desk.jpg) center 0 no-repeat;
+  background-size: 100% 100%;
+  height: 100vh;
+}
+
+@media screen and (orientation: portrait) {
+  #app {
+    transform: rotate(90deg);
+    width: 100vh;
+    height: 100vw;
+    /*去掉overflow 微信显示正常，但是浏览器有问题，竖屏时强制横屏缩小*/
+  }
+}
+@media screen and (orientation: landscape) {
+  #app {
+    transform: rotate(0);
+  }
+}
+.deskBG h2 {
+  display: block;
+  margin: 0 auto;
+  height: 19.5vh;
+  width: 58.5vh;
+  background: url(./images/titleCh.png) 0 3.9vh no-repeat;
+  background-size: cover;
+}
+
+.XModal {
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  z-index: 9100;
+}
+
+.usersBar {
+  display: flex;
+  margin: 0 auto;
+  padding-top: 6.5vh;
+  justify-content: center;
+}
+.usersBar div {
+  position: relative;
+  margin: 1.95vh;
+  width: 39vh;
+  height: 39vh;
+  border-radius: 50%;
+  text-align: center;
+  font-size: 15.6vh;
+  color: #fff;
+  line-height: 39vh;
+  cursor: pointer;
+}
+.usersBar div.active::before {
+  animation-name: light;
+  animation-direction: alternate;
+  animation-iteration-count: infinite;
+  animation-duration: 1s;
+}
+.usersBar div:before {
+  position: relative;
+  content: "";
+  display: block;
+  margin: 3.9vh auto;
+  width: 31.2vh;
+  height: 31.2vh;
+  border-radius: 50%;
+  background: url(./images/z2.png) center center no-repeat;
+  background-size: auto 86%;
+  box-shadow: 0 0 1.56vh rgba(173, 226, 32, 0.6);
+}
+.usersBar div:after {
+  display: none;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 31.2vh;
+  height: 31.2vh;
+  border-radius: 50%;
+  content: "";
+  width: inherit;
+  height: inherit;
+  background: rgba(0, 0, 0, 0.8);
+}
+.usersBar div.L:before {
+  background: url(./images/l2.png) center center no-repeat;
+  background-size: auto 88%;
+}
+.usersBar div.F:before {
+  background: url(./images/f2.png) center center no-repeat;
+  background-size: auto 88%;
+}
+.usersBar div.Y:before {
+  box-shadow: 0 0 1.04vh #f9fba8;
+}
+.usersBar div.Y:after {
+  position: absolute;
+  top: 0;
+  left: 0;
+  content: "";
+  display: block;
+  width: inherit;
+  height: inherit;
+  background: url(./images/userCh.png);
+  background-size: cover;
+}
+.usersBar div.empty::before {
+  box-shadow: none;
+}
+.usersBar div span {
+  display: none;
+  margin-top: -4.55vh;
+  font-size: 0.78vh;
+  line-height: 2.6vh;
+  color: #000;
+}
+
+.play h2 {
+  display: none;
+}
+.play .usersBar {
+  margin: 0;
+}
+.play .usersBar div {
+  position: fixed;
+  width: 6.5vh;
+  height: 6.5vh;
+  font-size: 4.16vh;
+  line-height: 6.5vh;
+  z-index: 9999;
+  box-shadow: 0 0 1.3vh 0.39vh rgba(0, 0, 0, 0.6) inset;
+}
+.play .usersBar div:before {
+  margin: 0;
+  width: 6.5vh;
+  height: 6.5vh;
+}
+.play .usersBar div:nth-child(1) {
+  left: 2.6vh;
+  top: 2.6vh;
+}
+.play .usersBar div:nth-child(2) {
+  width: 13vh;
+  height: 13vh;
+  left: 2.6vh;
+  bottom: 2.6vh;
+}
+.play .usersBar div:nth-child(2):before {
+  width: 13vh;
+  height: 13vh;
+}
+.play .usersBar div:nth-child(3) {
+  right: 2.6vh;
+  top: 2.6vh;
+}
+.play .usersBar div:after {
+  position: absolute;
+  top: 0;
+  left: 0;
+  content: "";
+  display: none;
+  width: inherit;
+  height: inherit;
+  background: url(./images/userCh.png);
+  background-size: cover;
+}
+.play .usersBar div.active::before {
+  border: 2.5px dashed #F0D500;
+  animation-name: light;
+  animation-direction: alternate;
+  animation-iteration-count: infinite;
+  animation-duration: 1s;
+  animation: spin 5s linear infinite;
+}
+
+.DCards, .UPcards, .UNcards {
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: center;
+  background-size: contain;
+}
+.DCards div, .UPcards div, .UNcards div {
+  position: relative;
+  width: 8.32vh;
+  height: 11.18vh;
+  margin-left: -6.24vh;
+  background: url(./images/bg.jpg) center center no-repeat;
+  background-size: cover;
+  border-radius: 0.52vh;
+  transition: all 1s;
+}
+.DCards.DCold, .UPcards.DCold, .UNcards.DCold {
+  position: relative;
+}
+
+.UPcards {
+  position: fixed;
+  top: 34.84vh;
+  left: 7.8vh;
+  transform: rotate(90deg);
+}
+
+.UNcards {
+  position: fixed;
+  top: 28.6vh;
+  right: 7.8vh;
+  transform: rotate(-90deg);
+}
+
+.WCards, .UMcards, .MYcards {
+  display: inline-block;
+  vertical-align: middle;
+  margin-top: 15.6vh;
+  padding: 0 1.95vh;
+  letter-spacing: -0.39vh;
+  border: 0.65vh solid rgba(173, 226, 32, 0.4);
+  text-align: center;
+  border-radius: 1.04vh;
+}
+.WCards div, .UMcards div, .MYcards div {
+  position: relative;
+  display: inline-block;
+  letter-spacing: 0;
+  margin: 2.6vh 0.65vh;
+  padding: 1.3vh;
+  width: 13.52vh;
+  height: 18.2vh;
+  border: 0.13vh solid #222;
+  background: #fff;
+  background-size: cover;
+  border-radius: 0.52vh;
+  box-shadow: 0.26vh 0.26vh 0.65vh 0.26vh #062C06, 0 0 1.3vh #ddd inset;
+  text-align: left;
+  font-size: 4.42vh;
+  vertical-align: middle;
+}
+.WCards div.A, .UMcards div.A, .MYcards div.A {
+  background: #fff url(./images/cardA.png) center center no-repeat;
+  background-size: 50%;
+  color: red;
+}
+.WCards div.B, .UMcards div.B, .MYcards div.B {
+  background: #fff url(./images/cardB.png) center center no-repeat;
+  background-size: 50%;
+}
+.WCards div.C, .UMcards div.C, .MYcards div.C {
+  background: #fff url(./images/cardC.png) center center no-repeat;
+  background-size: 50%;
+  color: red;
+}
+.WCards div.D, .UMcards div.D, .MYcards div.D {
+  background: #fff url(./images/cardD.png) center center no-repeat;
+  background-size: 50%;
+}
+.WCards div.Z, .UMcards div.Z, .MYcards div.Z {
+  background: #fff url(./images/cardZ.png) center center no-repeat;
+  background-size: 80%;
+  color: red;
+  font-size: 2.34vh;
+}
+.WCards div.V, .UMcards div.V, .MYcards div.V {
+  background: #fff url(./images/cardV.png) center center no-repeat;
+  background-size: 80%;
+  font-size: 2.34vh;
+}
+.WCards div::after, .UMcards div::after, .MYcards div::after {
+  display: none;
+  top: 17.94vh;
+}
+
+.UMcards {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 5.2vh;
+  padding: 0;
+  height: 18.2vh;
+  border: 0;
+  overflow: hidden;
+}
+.UMcards div {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+.MYcards {
+  position: fixed;
+  padding: 0;
+  bottom: 5.2vh;
+  width: 19.5vh;
+  right: 5.2vh;
+  border: 0;
+}
+.MYcards div {
+  float: left;
+  margin: -9.88vh 0.65vh 0 0;
+  width: 8.32vh;
+  height: 11.18vh;
+  background: #fff;
+  font-size: 2.34vh;
+  box-shadow: 0 0 0.39vh #062C06, 0 0 0.39vh #ddd inset;
+}
+.MYcards div.Z, .MYcards div.V {
+  font-size: 1.56vh;
+}
+.MYcards.XModal {
+  width: auto;
+  right: 0;
+  padding: 13vh;
+  font-size: 4.68vh;
+}
+.MYcards.XModal div {
+  float: none;
+  margin: 2.6vh 0.65vh;
+  padding: 1.3vh;
+  width: 13.52vh;
+  height: 18.2vh;
+}
+
+.pageEnd h2 {
+  display: block;
+  margin: 0 auto;
+  height: 19.5vh;
+  width: 52vh;
+  background: url(./images/titleEnd.png) 0 3.9vh no-repeat;
+  background-size: 100% auto;
+}
+.pageEnd .resultList {
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: center;
+  background-size: contain;
+  padding-top: 13vh;
+}
+.pageEnd .resultList .user {
+  margin: 2.6vh 2.6vh;
+  width: 31.2vh;
+  height: 28.6vh;
+  border: 0.52vh solid #ADE220;
+  border-radius: 2.08vh;
+  background: rgba(0, 0, 0, 0.4);
+}
+.pageEnd .resultList .user .avatar {
+  margin: -5.2vh auto 0;
+  width: 10.4vh;
+  height: 10.4vh;
+  border-radius: 50%;
+  background: 0 0 no-repeat;
+}
+.pageEnd .resultList .user .avatar.Z {
+  background: url(./images/z.png);
+  background-size: cover;
+}
+.pageEnd .resultList .user .avatar.L {
+  background: url(./images/l.png);
+  background-size: cover;
+}
+.pageEnd .resultList .user .avatar.F {
+  background: url(./images/f.png);
+  background-size: cover;
+}
+.pageEnd .resultList .user .name {
+  padding: 3.25vh;
+  text-align: center;
+  font-size: 4.68vh;
+  color: #F9FBA8;
+  font-weight: 700;
+  display: none;
+}
+.pageEnd .resultList .user .score {
+  margin: 2.6vh 5.2vh;
+  line-height: 13vh;
+  font-size: 9.62vh;
+  font-weight: 700;
+  background-color: rgba(0, 0, 0, 0.4);
+  color: #F9FF00;
+  border-radius: 1.56vh;
+}
+.pageEnd .resultList .user.me {
+  margin-top: 0;
+  width: 36.4vh;
+  height: 33.8vh;
+  border-width: 1.04vh;
+}
+.pageEnd .resultList .user.me .avatar {
+  position: relative;
+  margin-top: -7.02vh;
+  width: 14.04vh;
+  height: 14.04vh;
+}
+.pageEnd .resultList .user.me .avatar::before {
+  position: absolute;
+  top: -4.42vh;
+  left: -0.52vh;
+  display: block;
+  content: "";
+  width: 16.38vh;
+  height: 18.72vh;
+  background: url(./images/m.png) center center no-repeat;
+  background-size: 100%;
+}
+.pageEnd .resultList .user.me .score {
+  margin: 2.6vh 5.2vh;
+}
+.pageEnd .resultList .user.lost .score {
+  color: red;
+}
+.pageEnd .btnBar div {
+  margin: 3.9vh auto;
+  width: 59.28vh;
+  height: 13vh;
+  background: url(./images/buttonR.png) center center no-repeat;
+  background-size: cover;
+  cursor: pointer;
+}
+.pageEnd .exit {
+  position: absolute;
+  display: none;
+  left: 5.2vh;
+  bottom: 10.4vh;
+  width: 18.2vh;
+  height: 7.28vh;
+  background: url(./images/buttonExit.png) center center no-repeat;
+  background-size: cover;
+}
+
+ul {
+  position: relative;
+  display: flex;
+  flex-flow: row wrap;
+  padding: 50px;
+}
+ul li {
+  width: 8.32vh;
+  height: 11.18vh;
+  line-height: 7.41vh;
+  font-size: 2.6vh;
+  border: 0.13vh solid #222;
+  background: #fff url(./images/bg.jpg) center center no-repeat;
+  background-size: cover;
+  overflow: hidden;
+  text-indent: -1299.87vh;
+  text-align: left;
+  border-radius: 0.52vh;
+}
+ul.oringeCard li {
+  margin: 1.95vh -6.24vh 0 0;
+  z-index: 1;
+  box-shadow: 0.39vh 0.39vh 0.39vh rgba(0, 0, 0, 0.3);
+}
+
+ul li.Z1, ul li.Z2 {
+  padding: 0;
+  border: 2px solid;
+  font-size: 20px;
+}
+
+ul li.open.A, ul li.open.A1, ul li.open.A2, ul li.open.A3, ul li.open.A4, ul li.open.A5, ul li.open.A6, ul li.open.A7, ul li.open.A8, ul li.open.A9, ul li.open.A10, ul li.open.A11, ul li.open.A12, ul li.open.A13 {
+  background: #fff url(./images/cardA.png) 10px 10px no-repeat;
+  background-size: 30%;
+  color: darkred;
+  text-indent: 0px;
+  border: 1px solid #dcdcdc;
+}
+
+ul li.open.C, ul li.open.C1, ul li.open.C2, ul li.open.C3, ul li.open.C4, ul li.open.C5, ul li.open.C6, ul li.open.C7, ul li.open.C8, ul li.open.C9, ul li.open.C10, ul li.open.C11, ul li.open.C12, ul li.open.C13 {
+  background: #fff url(./images/cardC.png) 10px 10px no-repeat;
+  background-size: 30%;
+  color: darkred;
+  text-indent: 0px;
+  border: 1px solid #dcdcdc;
+}
+
+ul li.open.B, ul li.open.B1, ul li.open.B2, ul li.open.B3, ul li.open.B4, ul li.open.B5, ul li.open.B6, ul li.open.B7, ul li.open.B8, ul li.open.B9, ul li.open.B10, ul li.open.B11, ul li.open.B12, ul li.open.B13 {
+  background: #fff url(./images/cardB.png) 10px 10px no-repeat;
+  background-size: 30%;
+  text-indent: 0px;
+  border: 1px solid #dcdcdc;
+}
+
+ul li.open.D, ul li.open.D1, ul li.open.D2, ul li.open.D3, ul li.open.D4, ul li.open.D5, ul li.open.D6, ul li.open.D7, ul li.open.D8, ul li.open.D9, ul li.open.D10, ul li.open.D11, ul li.open.D12, ul li.open.D13 {
+  background: #fff url(./images/cardD.png) 10px 10px no-repeat;
+  background-size: 30%;
+  text-indent: 0px;
+  border: 1px solid #dcdcdc;
+}
+
+ul li.open.Z {
+  background: #fff url(./images/cardZ.png) 10px 10px no-repeat;
+  background-size: 30%;
+  text-indent: 0px;
+  border-color: darkred;
+  border: 1px solid #dcdcdc;
+  font-size: 16px;
+}
+
+ul li.open.V {
+  background: #fff url(./images/cardV.png) 10px 10px no-repeat;
+  background-size: 30%;
+  text-indent: 0px;
+  border: 1px solid #dcdcdc;
+  font-size: 12px;
+}
+
+section.you {
+  display: flex;
+  flex-flow: row wrap;
+  padding: 50px 0;
+}
+
+section.you ul {
+  padding: 15px;
+  width: 25%;
+}
+
+section.you ul.openCard {
+  padding: 15px;
+  width: 25%;
+  border: 3px solid #ddd;
+}
+
+section.other {
+  display: flex;
+  flex-flow: row wrap;
+  padding: 50px 0;
+}
+
+section.other ul {
+  padding: 15px;
+  width: 25%;
+}
+
+section.other ul li {
+  padding: 15px;
+  width: 25%;
+}
+
+section.other ul.openCard {
+  padding: 15px;
+  width: 25%;
+  border: 3px solid #ddd;
+}/*# sourceMappingURL=style.css.map */

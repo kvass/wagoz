@@ -42,19 +42,20 @@ export default {
     ],
     sockets: {  //在此接收由服务器发送过来的数据
         connect: function() {
-            window.console.log('CS 连接成功');
+            window.console.log('MMCS 连接成功');
         },
         DStartMsg: function(msg) {
             this.showHW = msg[0]
             window.console.log('初始条件')
-            window.console.log(msg[2])
             this.myCode = this.users[1].code
         }, //DStartMsg end
         sendCards: function(msg) {
             this.cards = msg
+            window.console.log('大类' + msg)
         }, //sendCards end
         DCutMsg: function(msg) {
             this.panID = msg[0]
+            window.console.log('i汉' + msg[0])
             this.option.DC = !this.option.DC
         }, //DCutMsg
         dealCardMsg: function(msg) {
